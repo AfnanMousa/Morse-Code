@@ -1,0 +1,49 @@
+void setup() {
+  pinMode(13,OUTPUT);   
+  Serial.begin(9600);
+  digitalWrite(13,LOW);  //Let the led be off in the beginning
+}
+String symbols[26]={".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-",".-..", "--", "-.", "---",
+".--.","--.-",".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."}; 
+String numbers [10] = {"-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----."};
+
+void check(char c){
+  if (c=='.'){                                              //If the char is dot so the led will be ON one unit long.
+    digitalWrite(13,HIGH);
+    delay(200);
+  }else if (c=='-'){                                        //If the char is dot so the led will be ON 3 times units long.
+    digitalWrite(13,HIGH);
+    delay(600);
+  }
+ 
+}
+void loop() {
+  if (Serial.available()){                                   //Check if the serial monitor has an input
+    String letter;
+    String input = Serial.readString();                      //Store the text in a String
+    for (int i=0;i<input.length();i++){
+      if(input[i]== ' '){                                    //If the char is a white space so the led will be OFF seven time units long.
+        digitalWrite(13,LOW);
+        delay(1400);
+      }else{
+         input[i]= tolower(input[i]);
+    
+     if(input[i]-48>=0 && input[i]-48 <=9)
+          letter = numbers[input[i]-48];
+      else if (input[i]>=97 && input[i]<=123)
+          letter = symbols[input[i]-97];
+
+     
+      for (int j=0;j<letter.length();j++){
+        check(letter[j]);                                  //Function to know if the char is dash or dot
+        digitalWrite(13,LOW);
+        if(j!=letter.length()-1){                              //Just to let the led OFF iff i still in the same letter
+        delay(200);}
+ 
+    }
+ 
+    delay(600);                                              //If we move from letter to another the led will be ON 3 times units long.
+    }  
+    }
+  }
+}
